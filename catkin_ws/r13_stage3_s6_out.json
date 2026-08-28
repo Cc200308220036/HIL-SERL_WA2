@@ -1,0 +1,782 @@
+{
+  "STAGE3_S6": "FAIL",
+  "checks": {
+    "exec_p95_le_0_12": false,
+    "interrupt_seen": true,
+    "no_fault_phase1": true,
+    "servo_hz_47_5_52_5": false,
+    "step_hz_9_5_10_5": false,
+    "ticks_5_of_5": true
+  },
+  "normal_steps_requested": 40,
+  "phase1": {
+    "any_fault": false,
+    "elapsed_s": 4.304875442001503,
+    "exec_duration_max_s": 0.1255291900015436,
+    "exec_duration_mean_s": 0.10499856502519833,
+    "exec_duration_p95_s": 0.12360971560083273,
+    "hold_after_zero_ticks": [
+      5,
+      5
+    ],
+    "hold_publish_delta_extra": 21,
+    "normal_count": 40,
+    "publish_delta": 200,
+    "rows": [
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.1136340629964252,
+        "execution_duration_s": 0.11282190400379477,
+        "i": 0,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.10439344000042183,
+        "execution_duration_s": 0.10302046399738174,
+        "i": 1,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.09440322700538673,
+        "execution_duration_s": 0.09385536699846853,
+        "i": 2,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.11149478600418661,
+        "execution_duration_s": 0.11090904599404894,
+        "i": 3,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.12860154200461693,
+        "execution_duration_s": 0.1255291900015436,
+        "i": 4,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          -0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.09837680700002238,
+        "execution_duration_s": 0.09719767999922624,
+        "i": 5,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          -0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.10310806300549302,
+        "execution_duration_s": 0.10242563799693016,
+        "i": 6,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          -0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.12112263900053222,
+        "execution_duration_s": 0.11432731300010346,
+        "i": 7,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          -0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.10501299799943808,
+        "execution_duration_s": 0.10264636200008681,
+        "i": 8,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          -0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.09804547899693716,
+        "execution_duration_s": 0.09724029200151563,
+        "i": 9,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.1079458029998932,
+        "execution_duration_s": 0.10727773800317664,
+        "i": 10,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.11925573700136738,
+        "execution_duration_s": 0.1142455270019127,
+        "i": 11,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.10505038700648583,
+        "execution_duration_s": 0.10224449200177332,
+        "i": 12,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.10183621799660614,
+        "execution_duration_s": 0.10052005400211783,
+        "i": 13,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.10548543999902904,
+        "execution_duration_s": 0.10343879200081574,
+        "i": 14,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          -0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.11292504299490247,
+        "execution_duration_s": 0.11175905800337205,
+        "i": 15,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          -0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.10149356299370993,
+        "execution_duration_s": 0.09936446600477211,
+        "i": 16,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          -0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.10754946200177073,
+        "execution_duration_s": 0.1070509659984964,
+        "i": 17,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          -0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.10165399400284514,
+        "execution_duration_s": 0.10076168000523467,
+        "i": 18,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          -0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.10565543600387173,
+        "execution_duration_s": 0.10459982400061563,
+        "i": 19,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.11650050599564565,
+        "execution_duration_s": 0.10503916599554941,
+        "i": 20,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.1085757930050022,
+        "execution_duration_s": 0.10550554399378598,
+        "i": 21,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.1075864719969104,
+        "execution_duration_s": 0.10572054400108755,
+        "i": 22,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.0918442900001537,
+        "execution_duration_s": 0.09067167499597417,
+        "i": 23,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.10532480999972904,
+        "execution_duration_s": 0.10419180199824041,
+        "i": 24,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          -0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.10366383599466644,
+        "execution_duration_s": 0.10305214099935256,
+        "i": 25,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          -0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.115095070003008,
+        "execution_duration_s": 0.1140827769995667,
+        "i": 26,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          -0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.1007332730005146,
+        "execution_duration_s": 0.09841510900150752,
+        "i": 27,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          -0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.10663240700523602,
+        "execution_duration_s": 0.10593458200310124,
+        "i": 28,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          -0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.10510935899947071,
+        "execution_duration_s": 0.10378857199975755,
+        "i": 29,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.10267504299554275,
+        "execution_duration_s": 0.10110620200430276,
+        "i": 30,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.09949327500362415,
+        "execution_duration_s": 0.09816855099779787,
+        "i": 31,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.12427275400114013,
+        "execution_duration_s": 0.12355589000071632,
+        "i": 32,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.09950684000068577,
+        "execution_duration_s": 0.09885162900172872,
+        "i": 33,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.10476810800173553,
+        "execution_duration_s": 0.10422561399900587,
+        "i": 34,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          -0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.12670492800680222,
+        "execution_duration_s": 0.12463240200304426,
+        "i": 35,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          -0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.09583527100039646,
+        "execution_duration_s": 0.08805186099925777,
+        "i": 36,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          -0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.10123015100543853,
+        "execution_duration_s": 0.10050906200194731,
+        "i": 37,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          -0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.11082948099647183,
+        "execution_duration_s": 0.11018543299724115,
+        "i": 38,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      },
+      {
+        "delta_pos_m": 0.0015000000596046448,
+        "delta_pos_xyz": [
+          -0.0015000000596046448,
+          0.0,
+          0.0
+        ],
+        "dt_s": 0.11245991900068475,
+        "execution_duration_s": 0.10301819199958118,
+        "i": 39,
+        "interrupted_by": "none",
+        "servo_faulted": false,
+        "servo_ticks_executed": 5,
+        "servo_ticks_requested": 5,
+        "stale_fields": [],
+        "term": false,
+        "trunc": false
+      }
+    ],
+    "servo_publish_hz": 46.458951645535244,
+    "step_hz": 9.29179032910705,
+    "steps": 40,
+    "ticks_all_5_of_5": true
+  },
+  "phase2": {
+    "interrupt_ticks_lt_5": true,
+    "next_step": {
+      "delta_pos_m": 0.0,
+      "dt_s": 0.11031295299471822,
+      "execution_duration_s": 0.10911817399755819,
+      "i": 72,
+      "interrupted_by": "none",
+      "intervened": true,
+      "servo_faulted": false,
+      "servo_ticks_executed": 5,
+      "servo_ticks_requested": 5,
+      "sm_session": true
+    },
+    "next_step_recorded": true,
+    "pass_candidate": true,
+    "saw_interrupt_step": {
+      "delta_pos_m": 0.00030000001192092895,
+      "dt_s": 0.03544718900229782,
+      "execution_duration_s": 0.03463613399799215,
+      "i": 71,
+      "interrupted_by": "intervention",
+      "intervened": false,
+      "servo_faulted": false,
+      "servo_ticks_executed": 1,
+      "servo_ticks_requested": 5,
+      "sm_session": false
+    }
+  },
+  "scale": 0.3
+}

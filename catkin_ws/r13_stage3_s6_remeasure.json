@@ -1,0 +1,25 @@
+{
+  "summary": {
+    "step_hz_n_over_T": 9.707149625963963,
+    "step_hz_inv_mean_wall": 9.723833407400539,
+    "servo_hz_during_motion": 48.53574812981981,
+    "servo_hz_zero_hold_3s": 48.36065642778369,
+    "ticks_all_5_5": true,
+    "exec_mean": 0.1013076308003292,
+    "exec_p95": 0.10960164945463474,
+    "exec_max": 0.11260011100239353,
+    "wall_mean": 0.10284009999995761,
+    "wall_p95": 0.11059561235524597,
+    "dpos_unique": [
+      0.0015
+    ]
+  },
+  "checks": {
+    "step_hz_9_5_10_5": true,
+    "step_hz_inv_mean_9_5_10_5": true,
+    "servo_motion_47_5_52_5": true,
+    "servo_hold_47_5_52_5": true,
+    "ticks_5_of_5": true,
+    "exec_p95_le_0_12": true
+  }
+}

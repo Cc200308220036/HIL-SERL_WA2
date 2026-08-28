@@ -1,0 +1,142 @@
+version: "0.1.1"
+date: "2026-08-12"
+arm: left
+action:
+  dim: 6
+  dtype: float32
+  low: -1.0
+  high: 1.0
+  semantics: [dx, dy, dz, droll, dpitch, dyaw]
+  # 平移在 base；旋转增量与已验收遥操一致用 tool
+  position_frame: base
+  rotation_frame: tool
+  max_pos_delta_m: 0.0015
+  max_rot_delta_deg: 0.375
+  control_hz: 50
+  control_dt: 0.02
+  # R13 stage-3: policy/transition time scale is 10 Hz while ServoL stays 50 Hz.
+  policy_hz: 10
+  servo_ticks_per_action: 5
+observation:
+  state:
+    tcp_pose:
+      shape: [7]
+      dtype: float32
+      unit: "m+quat_xyzw"
+      topic: "/zj_humanoid/upperlimb/tcp_pose/left_arm"
+      msg_type: "upperlimb/Pose"
+      hz_measured: 125.15
+    tcp_vel:
+      shape: [6]
+      dtype: float32
+      unit: "m/s+rad/s"
+      topic: "/zj_humanoid/upperlimb/tcp_speed/dual_arm"
+      msg_type: "upperlimb/TcpSpeed"
+      field: left_arm
+      hz_measured: 125.09
+    joint_pos:
+      shape: [8]
+      dtype: float32
+      unit: rad
+      topic: "/zj_humanoid/upperlimb/joint_states"
+      msg_type: "sensor_msgs/JointState"
+      names:
+        - Chest_Z_L
+        - Shoulder_Y_L
+        - Shoulder_X_L
+        - Shoulder_Z_L
+        - Elbow_L
+        - Wrist_Z_L
+        - Wrist_Y_L
+        - Wrist_X_L
+      hz_measured: 125.06
+    hand_joints:
+      shape: [6]
+      dtype: float32
+      unit: rad
+      topic: "/zj_humanoid/hand/joint_states"
+      msg_type: "sensor_msgs/JointState"
+      names:
+        - THUMB_MP_LEFT
+        - THUMB_CMC_LEFT
+        - INDEX_MCP_LEFT
+        - MIDDLE_MCP_LEFT
+        - RING_MCP_LEFT
+        - LITTLE_MCP_LEFT
+      hz_measured: 200.07
+  images:
+    head:
+      topic: "/zj_humanoid/sensor/realsense_head/color/image_raw"
+      msg_type: "sensor_msgs/Image"
+      enabled: true
+      encoding_raw: rgb8
+      raw_shape: [720, 1280, 3]
+      # Env observation_space 固定值；R6 负责从 raw resize
+      shape: [128, 128, 3]
+      dtype: uint8
+      hz_measured: 29.99
+      frame_id: realsense_head_color_optical_frame
+    wrist:
+      topic: "/zj_humanoid/sensor/left_wrist/image_raw"
+      msg_type: "sensor_msgs/Image"
+      enabled: true
+      status: active
+      encoding_raw: bgr8
+      raw_shape: [720, 1280, 3]
+      shape: [128, 128, 3]
+      dtype: uint8
+      # fake_env / 未订流时的占位；真机路径必须出真实图
+      missing_policy: zero_image
+info_fields:
+  - is_singular
+  - state_age
+  - image_age
+  - image_ages
+  - cmd_num
+  - cmd_name
+  - iddp_status
+freshness:
+  state_max_age_s: 0.2
+  image_max_age_s: 0.2
+  uplimb_state_topic: "/zj_humanoid/upperlimb/uplimb_state"
+  uplimb_state_hz_measured: 125.09
+episode:
+  max_steps: 400
+  reward: constant_zero
+  terminated: task_placeholder_false
+  truncated:
+    - max_steps
+    - stale_state
+    - stale_image_head
+    - stale_image_wrist
+    - safety
+    - manual_abort
+reset:
+  strategy: scene_yaml_movej   # R5: configs/scenes/<task>.yaml；无 scene 时仍可人工容差
+  requires_human_confirm: true
+  joint_tol_rad: 0.05
+  tcp_pos_tol_m: 0.01
+  tcp_rot_tol_deg: 5.0
+  default_scene: bottle_desktop
+  note: "任务数值在 scenes/*.yaml；episode.max_steps 可被场景覆盖"
+control:
+  backend: servol
+  servo_time: 0.02
+  servo_gain: 800
+  topics:
+    set_servo_params: "/zj_humanoid/upperlimb/set_servo_params"
+    servol: "/zj_humanoid/upperlimb/servol/left_arm"
+    stop: "/zj_humanoid/upperlimb/stop"
+    clear: "/zj_humanoid/upperlimb/clear_servo_params"
+  sole_action_publisher: WA2Env
+  on_close: [stop, clear_servo_params]
+  on_exception: [stop, clear_servo_params]
+fake_env:
+  touches_ros: false
+  touches_camera: false
+  image_fill: zeros
+appendix_7d:
+  action_dim: 7
+  enabled: false
+  hand_semantics: deferred_until_6d_stable
+  note: "第一版禁止；6D 稳定后再扩展"

@@ -1,0 +1,394 @@
+Learner 笔记本依赖与版本（R10 GPU Gate / 对齐 Orin hil-actor）
+================================================================
+日期：2026-08-13
+机器：R7000P（RTX 4060 + 16 GB 系统内存）
+系统：Ubuntu 22.04 / x86_64
+Learner 根目录：/home/cyw/HILSERL_Learner
+Conda 环境名：hil-learner
+对照：Orin 容器 hilserl / Conda hil-actor
+任务：bottle_pick / wa2_bottle_pick
+
+本文件文件名按指定保留为 learner_equriment.txt。
+
+
+一、结论与边界
+----------------
+本方案经下文修正后可执行，但不得再按旧版中以下内容操作：
+
+  1. 不使用 hil-learner-r10，环境名固定为 hil-learner。
+  2. 不克隆当前 hilserl_sim。该环境已实查有
+     jax==0.4.35 / jaxlib==0.4.34 不一致，且 pip check 有无关残留包冲突。
+  3. 不使用 <repo>/catkin_ws/src；Learner 独立工程的源码根是
+     /home/cyw/HILSERL_Learner/src。
+  4. R10 正式验收不允许 CPU Gate；JAX 必须识别 RTX 4060。
+  5. docker/actor-requirements.txt 是 Orin aarch64 冻结基线，不能把其
+     Conda/OpenCV 注释原样当作 x86_64 Learner 安装指令。
+  6. 空白环境中不能只执行 --no-deps 就假定 CUDA runtime 已齐全；
+     JAX CUDA plugin 的 with_cuda 依赖必须显式安装并用 pip check 验证。
+
+R10 验证「跨机协议 + 任务/space/model 一致 + GPU SAC 可构造」。
+R13 才进行长时梯度训练、batch/replay 调优和 checkpoint 压测。
+
+Learner 上不安装：
+
+  ROS / rospy / naviai_controller / RealSense / SpaceMouse 真机驱动 /
+  ServoL / franka_env
+
+
+二、已知机器条件
+------------------
+已知条件：
+
+  Ubuntu 22.04
+  x86_64
+  NVIDIA 内核驱动：580.173.02（仍以交互终端 nvidia-smi 为权威证据）
+  /usr/local/cuda -> /usr/local/cuda-12.9
+  /home 剩余空间约 44 GB
+  Conda 25.5.1
+
+正式 R10 GPU 前必须再记录：
+
+  nvidia-smi 中的 GPU 名称、Driver Version、显存容量
+  jax.devices()
+  SAC agent 初始化设备
+  首次 JIT action 推理成功
+
+受控自动化终端可能看不到 /dev/nvidia*，不以该上下文替代用户本地
+交互终端的 GPU 实测。但最终验收日志必须来自能访问 GPU 的正式终端。
+
+
+三、Conda / Python（必须）
+-----------------------------
+新建独立环境，不 clone hilserl_sim：
+
+  环境名      hil-learner
+  Python        3.10.20
+  pip           由 Conda 安装后记录版本
+  setuptools    由 Conda 安装
+  wheel         由 Conda 安装
+  packaging     由 Conda 安装
+
+建议创建命令（得到许可后才执行）：
+
+  source /home/cyw/anaconda3/etc/profile.d/conda.sh
+  conda create -y -n hil-learner -c conda-forge \
+    python=3.10.20 pip setuptools wheel packaging
+  conda activate hil-learner
+
+如 `hil-learner` 已存在，不覆盖、不删除，先检查再决定处理方式。
+
+
+四、与 Orin 锁定的 Python 基线
+----------------------------------
+下列版本与 2026-08-13 R8/R9 验收对齐。JAX 四件套必须全为
+0.4.35，禁止 jax==0.4.35 + jaxlib==0.4.34。
+
+  jax                   0.4.35
+  jaxlib                0.4.35
+  jax-cuda12-plugin     0.4.35
+  jax-cuda12-pjrt       0.4.35
+
+  agentlace             0.1.3
+  serl_launcher         0.1.2
+
+  numpy                 1.26.4
+  scipy                 1.15.3
+  flax                  0.10.2
+  optax                 0.2.4
+  chex                  0.1.88
+  distrax               0.1.5
+  gym                   0.26.2
+  gymnasium             1.2.2
+  pyzmq                 27.1.0
+  PyYAML                6.0.3
+  protobuf              7.35.1
+  ml_dtypes             0.5.4
+  ml_collections        1.1.0
+  orbax-checkpoint      0.10.3
+  tensorstore           0.1.71
+  einops                0.8.1
+  tqdm                  4.70.0
+  pillow                12.3.0
+  ImageIO               2.37.2
+  matplotlib            3.10.9
+  natsort               8.4.0
+  absl-py               2.5.0
+  dm-tree               0.1.10
+  msgpack               1.2.1
+  cloudpickle           3.1.2
+  typing_extensions     4.16.0
+
+TensorFlow 栈与 Orin 基线保持一致：
+
+  tensorflow             2.21.0
+  tensorflow-probability 0.25.0
+  tf_keras               2.21.0
+  keras                  3.12.4
+
+W&B 版本可安装以保持 import 完整，但 R10 使用 --debug，不依赖外网：
+
+  wandb                  0.28.1
+
+OpenCV 在 x86_64 Learner 统一使用 pip wheel：
+
+  opencv-python         4.10.0.84
+
+不再由 Conda 安装 OpenCV，避免 Conda/pip 同时提供 cv2。
+
+
+五、JAX CUDA 安装策略（修正后）
+--------------------------------------
+`requirements/actor-requirements.txt` 明确列出 JAX 四件套，但该文件原本是
+Orin aarch64 freeze，且 `--no-deps` 不会自动安装 CUDA 12 runtime/cuDNN 依赖。
+
+在 x86_64 Learner 的安装顺序必须是：
+
+  1. 用 actor-requirements.txt 安装已冻结 Python 包；
+  2. 再显式安装 `jax-cuda12-plugin[with_cuda]==0.4.35`，补齐 NVIDIA pip runtime；
+  3. 再次用 --no-deps 强制 JAX 四件套恰好为 0.4.35；
+  4. 执行 pip check 和 GPU JAX Gate。
+
+原因：`jax[cuda12]==0.4.35` 的元数据允许/可能选到 jaxlib 0.4.34，
+不能只依赖 resolver 自动选版。
+
+建议命令（得到许可且环境创建后才执行）：
+
+  cd /home/cyw/HILSERL_Learner
+  source /home/cyw/anaconda3/etc/profile.d/conda.sh
+  conda activate hil-learner
+
+  python -m pip install --no-deps \
+    -r requirements/actor-requirements.txt
+
+  python -m pip install --no-deps \
+    'opencv-python==4.10.0.84'
+
+  python -m pip install \
+    'jax-cuda12-plugin[with_cuda]==0.4.35'
+
+  python -m pip install --force-reinstall --no-deps \
+    'jax==0.4.35' \
+    'jaxlib==0.4.35' \
+    'jax-cuda12-plugin==0.4.35' \
+    'jax-cuda12-pjrt==0.4.35'
+
+不直接使用 `requirements/orin-hil-actor.lock.txt` 独立安装空白环境：
+它是较小的 Orin pip 冻结子集，没有覆盖 TensorFlow/Matplotlib 等完整 import 闭包。
+
+
+六、Agentlace 和 SERL 安装
+------------------------------
+Agentlace 必须使用已复制的本地修正 wheel：
+
+  路径：
+    /home/cyw/HILSERL_Learner/artifacts/wheels/agentlace-0.1.3-py3-none-any.whl
+
+  SHA-256：
+    1a800cc341f03eb6844273571ba26a265920fa1b5a698acc3d954438cbb72d32
+
+安装：
+
+  python -m pip install --force-reinstall --no-deps \
+    /home/cyw/HILSERL_Learner/artifacts/wheels/agentlace-0.1.3-py3-none-any.whl
+
+SERL 从 Learner 独立源码 editable 安装：
+
+  python -m pip install --no-deps --editable \
+    /home/cyw/HILSERL_Learner/src/hil-serl-main/serl_launcher
+
+不直接安装：
+
+  /home/cyw/HILSERL_Learner/src/hil-serl-main/serl_launcher/requirements.txt
+
+原因：上游文件包含 gymnasium==0.29.1、scipy==1.11.4，与 Orin 已验收基线冲突。
+
+
+七、权重与独立源码路径
+----------------------------
+ResNet10 权重已复制到：
+
+  /home/cyw/HILSERL_Learner/artifacts/models/resnet10_params.pkl
+
+SHA-256：
+
+  175745d43d30233eb01b5369465d1c24c11b8ee71ccb734cc1c1bca13e07f57b
+
+SERL 现有代码默认读取 `~/.serl/resnet10_params.pkl`，所以采用指向独立工程
+权重的软链接，不再维护两份实体。但不盲目覆盖现有文件，先取证：
+
+  mkdir -p /home/cyw/.serl
+  ls -l /home/cyw/.serl/resnet10_params.pkl 2>/dev/null || true
+  sha256sum -L /home/cyw/.serl/resnet10_params.pkl 2>/dev/null || true
+
+若现有文件/链接 hash 已经是 `175745...f57b`，可保留；若不同，先将其移到带时间戳的
+备份路径，再创建链接。最终链接命令：
+
+  ln -s \
+    /home/cyw/HILSERL_Learner/artifacts/models/resnet10_params.pkl \
+    /home/cyw/.serl/resnet10_params.pkl
+
+链接完成后用 `sha256sum -L` 跟随链接校验。
+
+Learner 源码树：
+
+  /home/cyw/HILSERL_Learner/src/hilserl_wa2/
+  /home/cyw/HILSERL_Learner/src/hil-serl-main/examples/
+  /home/cyw/HILSERL_Learner/src/hil-serl-main/serl_launcher/
+
+PYTHONPATH：
+
+  /home/cyw/HILSERL_Learner/src
+  /home/cyw/HILSERL_Learner/src/hil-serl-main/examples
+  /home/cyw/HILSERL_Learner/src/hil-serl-main/serl_launcher
+
+
+八、GPU 运行环境变量
+----------------------
+R10 正式 Gate 不设置 `JAX_PLATFORMS=cpu`。若 shell 中残留该变量，必须清除：
+
+  unset JAX_PLATFORMS
+
+建议：
+
+  export CUDA_ROOT=/usr/local/cuda
+  export XLA_FLAGS=--xla_gpu_autotune_level=0
+  export XLA_PYTHON_CLIENT_PREALLOCATE=false
+  export XLA_PYTHON_CLIENT_MEM_FRACTION=0.3
+
+  export PYTHONPATH=/home/cyw/HILSERL_Learner/src:\
+/home/cyw/HILSERL_Learner/src/hil-serl-main/examples:\
+/home/cyw/HILSERL_Learner/src/hil-serl-main/serl_launcher:${PYTHONPATH:-}
+
+`CUDA_ROOT=/usr/local/cuda` 也避免某些 JAX 0.4.35 组合在检查
+`nvidia.cuda_nvcc.__file__` 时遇到 namespace package 路径为 None 的问题。
+
+同一验收进程按顺序：先 import jax，再 import tensorflow。
+
+
+九、环境与 GPU 验收（安装后必须全部通过）
+----------------------------------------------------
+1. 基础版本：
+
+  python --version
+    期望：Python 3.10.20
+
+  python -m pip check
+    期望：No broken requirements found.
+
+  python -c "import jax,jaxlib; print(jax.__version__, jaxlib.__version__)"
+    期望：0.4.35 0.4.35
+
+  python -c "import importlib.metadata as m; print(m.version('jax-cuda12-plugin'), m.version('jax-cuda12-pjrt'), m.version('agentlace'), m.version('serl_launcher'))"
+    期望：0.4.35 0.4.35 0.1.3 0.1.2
+
+2. GPU 强制 Gate：
+
+  nvidia-smi
+
+  python -c "import jax; d=jax.devices(); print(d); assert d and all(x.platform in ('gpu','cuda') for x in d), d"
+
+  期望：出现 CudaDevice/GpuDevice，不接受 CpuDevice。
+
+3. CUDA 实际运算：
+
+  python -c "import jax, jax.numpy as jnp; x=jnp.ones((2048,2048)); y=jax.jit(lambda z:z@z)(x).block_until_ready(); print(y.device, float(y[0,0])); assert y.device.platform in ('gpu','cuda')"
+
+4. TensorFlow import（JAX 之后）：
+
+  python -c "import jax; print(jax.devices()); import tensorflow as tf; import tensorflow_probability as tfp; print(tf.__version__, tfp.__version__)"
+
+5. 本地 artifact：
+
+  cd /home/cyw/HILSERL_Learner
+  sha256sum artifacts/wheels/agentlace-0.1.3-py3-none-any.whl
+  sha256sum -L /home/cyw/.serl/resnet10_params.pkl
+
+6. fake Env / model Gate：
+
+  python src/hilserl_wa2/scripts/verify_r8_config.py \
+    --task bottle_pick --all
+
+  python src/hilserl_wa2/scripts/verify_r8_agent_buffer.py \
+    --task bottle_pick --all
+
+第二条必须记录 SAC agent 初始化、params tree signature、JIT action 以及 GPU device；
+如原脚本没有输出 device，R10 实施时必须补充 GPU 断言。
+
+
+十、双端对齐指纹
+--------------------
+安装后必须与 Orin 一致：
+
+  config_bundle_hash
+    bff87be7f04e6752ea2c19cec058f5687e51bc9faba15d21aab0535cc2080923
+
+  space_hash
+    b7a0b860d94b648a56cc453d772c478886dc4d0acecb89d6e8eb527b6831b367
+
+  params_tree_signature
+    08f79859e3ba2f5da5a9b0cb16e63bd10aa355878e3a0f724465b8850aae6920
+
+  Agentlace wheel SHA-256
+    1a800cc341f03eb6844273571ba26a265920fa1b5a698acc3d954438cbb72d32
+
+  ResNet10 SHA-256
+    175745d43d30233eb01b5369465d1c24c11b8ee71ccb734cc1c1bca13e07f57b
+
+R10 还必须比对 source_tree_sha256、network_config_hash 和 protocol_version。
+
+
+十一、网络（环境/Env/GPU Gate 通过后才配置）
+--------------------------------------------------
+Learner 是 Agentlace Server：
+
+  TCP 5588：transition / request
+  TCP 5589：params broadcast
+
+要求：
+
+  笔记本使用确认过的局域网 IPv4。
+  Learner 先启，Orin Actor 后启。
+  防火墙仅允许 Orin IPv4/32 访问 5588/5589。
+  不允许 0.0.0.0/0，不做路由器公网端口转发。
+
+不在 Conda 环境安装尚未验收时就开放端口。
+
+
+十二、R7000P 资源边界
+----------------------
+R10 主 Gate：
+
+  1020 条 actor_env（其中 1000 条非干预）
+  20 条 actor_env_intvn
+  一个连续干预段
+  小型有限 DataStore
+
+该规模可在 16 GB 系统内存上执行。
+
+R13 不得直接使用 YAML 当前：
+
+  batch_size=256
+  replay_buffer_capacity=200000
+
+双 128x128 RGB 观测下，20 万 transition 的原始图像数据已可达数十 GB，
+超出 16 GB 系统内存的安全边界。R13 必须另行压测 batch、capacity、
+MemoryEfficientReplayBuffer、GPU 显存和 checkpoint，不在 R10 中修改 Env/space 契约。
+
+
+十三、执行顺序（得到许可后）
+----------------------------------
+  1. 确认 `/home/cyw/HILSERL_Learner` 源码与 artifact hash。
+  2. 新建 `hil-learner`，不 clone `hilserl_sim`。
+  3. Conda 安装 Python 工具链，OpenCV 不由 Conda 安装。
+  4. 安装 actor freeze 中的版本基线与单一 pip OpenCV wheel。
+  5. 显式安装 JAX CUDA with_cuda 依赖，重锁 JAX 四件套 0.4.35。
+  6. 安装修正 Agentlace wheel 和 editable serl_launcher。
+  7. 建立 ResNet10 权重软链接并校验。
+  8. `pip check`、GPU matmul、TensorFlow import。
+  9. fake Env / SAC / buffer / JIT / hash Gate。
+  10. 生成 Learner manifest，与 Orin manifest 比对。
+  11. 只对 Orin /32 开放 TCP 5588/5589。
+  12. 进入 R10 跨机通信 Gate。
+
+任一步失败就停止，不用 CPU 结果代替 GPU Gate，不在环境不完整时
+先开放端口或启动 Orin Actor。

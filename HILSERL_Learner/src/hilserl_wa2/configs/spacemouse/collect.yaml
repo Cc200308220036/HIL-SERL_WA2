@@ -1,0 +1,75 @@
+# 采集前试速 / 试抓：独立遥操用这份，不要与 Actor 同时跑。
+#   python .../run_spacemouse_teleop_from_yaml.py --config collect
+#
+# 相对 default.yaml：平移每步顶到 1mm（对齐 Env），linear_scale 加倍。
+# 抓/放姿态只改下面 hand.*；启动不必先回到全 0。
+
+version: "0.1.2"
+date: "2026-08-17"
+
+joy:
+  topic: "/spacenav/joy"
+  max_age_s: 0.2
+
+buttons:
+  deadman: 1
+  hand: 0
+  session_mode: toggle
+
+hand:
+  # THUMB_MP, THUMB_CMC, INDEX, MIDDLE, RING, LITTLE
+  # 非全 0 的 release_target 走 grasp_hand(半开)，不再调用 SDK 全张。
+  grasp_target: [0.1, 0.9, 0.7, 0.7, 0.4, 0.4]
+  release_target: [0.1, 0.9, 0.3, 0.3, 0.3, 0.3]
+
+input:
+  axis_map: [0, 1, 2, 3, 4, 5]
+  axis_sign: [-1.0, -1.0, 1.0, 1.0, -1.0, -1.0]
+  translation_deadzone: 0.12
+  rotation_deadzone: 0.16
+  translation_curve_mix: 0.15
+  rotation_curve_mix: 0.35
+  translation_filter_tau: 0.04
+  rotation_filter_tau: 0.08
+  translation_enter_threshold: 0.30
+  rotation_enter_threshold: 0.60
+  intent_exit_threshold: 0.18
+  group_switch_hysteresis: 0.12
+  axis_switch_hysteresis: 0.25
+  secondary_axis_ratio: 0.90
+
+intervention:
+  intervene_eps: 0.001
+  control_dt: 0.02
+  auto_start_ros: true
+  action_gain: 1.5
+
+teleop:
+  arm_side: left
+  execute: true
+  hand_execute: true
+  axis_enable: [1, 1, 1, 1, 1, 1]
+  publish_rate: 50.0
+  watchdog: 0.25
+  tcp_watchdog: 0.25
+  state_watchdog: 0.25
+  linear_scale: 0.020
+  angular_scale: 0.08
+  max_step_m: 0.001
+  max_angular_step: 0.002
+  workspace_m: 0.06
+  rotation_limit_deg: 15.0
+  rotation_frame: tool
+  hand_cooldown: 1.0
+  hand_neutral_threshold: 0.08
+  # released：下一击抓，不要求当前关节接近全 0 或 release_target
+  # grasped：下一击放
+  # auto：当前反馈须接近 grasp_target 或 release_target
+  initial_hand_state: released
+
+launch:
+  ensure_spacenavd: true
+  ensure_spacenav_node: true
+  spacenav_node_package: spacenav_node
+  spacenav_node_binary: spacenav_node
+  joy_hz_check_s: 3.0

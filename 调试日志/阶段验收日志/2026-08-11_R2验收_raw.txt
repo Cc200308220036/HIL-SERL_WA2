@@ -1,0 +1,51 @@
+test_ambiguous_feedback_inhibits_toggle (test_end_effector.DexterousHandAdapterTests) ... ok
+test_auto_detects_released_and_grasped (test_end_effector.DexterousHandAdapterTests) ... ok
+test_busy_adapter_rejects_second_request (test_end_effector.DexterousHandAdapterTests) ... ok
+test_dry_run_does_not_call_service (test_end_effector.DexterousHandAdapterTests) ... ok
+test_failed_service_keeps_previous_state (test_end_effector.DexterousHandAdapterTests) ... ok
+test_successful_toggle_changes_state_only_after_service (test_end_effector.DexterousHandAdapterTests) ... ok
+test_default_rotation_is_limited_to_two_degrees (test_pose_integrator.PoseIntegratorTests) ... ok
+test_invalid_motion_and_dt_are_rejected (test_pose_integrator.PoseIntegratorTests) ... ok
+test_mixed_motion_is_rejected_in_first_phase (test_pose_integrator.PoseIntegratorTests) ... ok
+test_reset_normalizes_quaternion (test_pose_integrator.PoseIntegratorTests) ... ok
+test_rotation_does_not_change_position_and_stays_normalized (test_pose_integrator.PoseIntegratorTests) ... ok
+test_step_requires_reset (test_pose_integrator.PoseIntegratorTests) ... ok
+test_tool_and_base_rotation_composition_are_distinct (test_pose_integrator.PoseIntegratorTests) ... ok
+test_translation_does_not_change_orientation (test_pose_integrator.PoseIntegratorTests) ... ok
+test_translation_workspace_limit (test_pose_integrator.PoseIntegratorTests) ... ok
+test_zero_motion_preserves_pose (test_pose_integrator.PoseIntegratorTests) ... ok
+test_all_rotation_samples (test_spacemouse_input.SpaceMouseCalibrationTests) ... ok
+test_all_translation_samples (test_spacemouse_input.SpaceMouseCalibrationTests) ... ok
+test_axis_lock_uses_hysteresis (test_spacemouse_input.SpaceMouseCalibrationTests) ... ok
+test_clockwise_twist_suppresses_large_z_crosstalk (test_spacemouse_input.SpaceMouseCalibrationTests) ... ok
+test_continuous_deadband (test_spacemouse_input.SpaceMouseCalibrationTests) ... ok
+test_direct_rotation_to_right_translation_switches_group (test_spacemouse_input.SpaceMouseCalibrationTests) ... ok
+test_disabled_path_clears_filter_and_intent (test_spacemouse_input.SpaceMouseCalibrationTests) ... ok
+test_invalid_axis_input_is_rejected (test_spacemouse_input.SpaceMouseCalibrationTests) ... ok
+test_low_pass_filter_uses_dt (test_spacemouse_input.SpaceMouseCalibrationTests) ... ok
+test_right_translation_suppresses_z_and_roll_crosstalk (test_spacemouse_input.SpaceMouseCalibrationTests) ... ok
+test_twist_remains_rotation_despite_large_translation_crosstalk (test_spacemouse_input.SpaceMouseCalibrationTests) ... ok
+test_contract_loads_v010 (test_wa2_contracts.WA2ContractTests) ... ok
+test_spaces_match_yaml (test_wa2_contracts.WA2ContractTests) ... ok
+test_action_clip_physical_scale (test_wa2_env.WA2EnvTests) ... ok
+test_close_idempotent (test_wa2_env.WA2EnvTests) ... ok
+test_fake_env_true_required_for_now (test_wa2_env.WA2EnvTests) ... ok
+test_images_dual_keys_and_wrist_zero (test_wa2_env.WA2EnvTests) ... ok
+test_inject_terminated (test_wa2_env.WA2EnvTests) ... ok
+test_max_steps_truncated (test_wa2_env.WA2EnvTests) ... ok
+test_reject_nan_and_bad_shape (test_wa2_env.WA2EnvTests) ... ok
+test_reset_obs_in_space (test_wa2_env.WA2EnvTests) ... ok
+test_rotation_physical_limit (test_wa2_env.WA2EnvTests) ... ok
+test_seed_reproducible (test_wa2_env.WA2EnvTests) ... ok
+test_step_five_tuple (test_wa2_env.WA2EnvTests) ... ok
+
+----------------------------------------------------------------------
+Ran 40 tests in 0.412s
+
+OK
+PASS: check_env
+PASS: random_1000 + close idempotent
+PASS: fake_env isolation
+PASS: seed_repro
+PASS: wrist_zero_image
+R2 GATE: PASS

@@ -1,0 +1,50 @@
+# 新任务实验模板：复制为 <task_id>.yaml 后按注释填写。
+#
+#   cp _TEMPLATE.yaml my_new_task.yaml
+#   # 至少改 task_id / display_name / env.scene
+#   # CONFIG_MAPPING 下次启动自动出现 --exp_name=wa2_my_new_task
+#
+# 不要改 Python / mappings.py / WA2Env。
+# 禁止在本文件写入 Franka URL、相机序列号、或扩大 ServoL 单步限幅。
+
+schema_version: "1"
+task_id: my_new_task          # 必须与文件名 stem 一致；仅 [a-z0-9_]
+display_name: "新任务（请改名）"
+
+env:
+  scene: my_new_scene         # → configs/scenes/<scene>.yaml（开局标定）
+  contract: default           # → 包内 configs/wa2_env_contract.yaml（不可指向仓库根）
+  camera: head_wrist          # → configs/cameras/<name>.yaml
+  spacemouse: default         # → configs/spacemouse/<name>.yaml
+
+observation:
+  image_keys: [head, wrist]   # 必须存在于 Env observation_space["images"]
+  proprio_keys: [tcp_pose, tcp_vel, joint_pos, hand_joints]
+
+action:
+  mode: left_arm_6d           # 第一版仅此值；改 7D 必须升级契约
+
+wrappers:
+  intervention: true          # fake_env=True 时强制不包装
+  serl_obs: true              # 顺序固定，不可重排
+  obs_horizon: 1
+  act_exec_horizon: null
+
+reward:
+  mode: constant_zero         # R12 仍用 constant_zero；分类器走独立 ckpt，禁止 succeed→reset
+  classifier_keys: [head, wrist]  # ⊆ observation.image_keys；null 则 factory 对 classifier=True bypass
+
+training:
+  agent: drq
+  setup_mode: single-arm-fixed-gripper   # 6D 固定手，不进策略
+  encoder_type: resnet-pretrained
+  discount: 0.97
+  batch_size: 256
+  # 训练循环总步，不是单局长度。单局截断见 scenes/*.yaml 的 episode.max_steps
+  max_steps: 1000000
+  replay_buffer_capacity: 200000
+  random_steps: 0
+  training_starts: 100
+  steps_per_update: 50
+  buffer_period: 1000
+  checkpoint_period: 5000

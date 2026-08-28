@@ -1,0 +1,42 @@
+# R8 可复用性验收任务：不改 Python / mappings.py 即应出现 wa2_r8_mock_alt。
+# 与 bottle_pick 保持相同 observation/action/wrapper 空间；只改训练超参与显示名。
+schema_version: "1"
+task_id: r8_mock_alt
+display_name: "R8 mock alt（space 应与 bottle_pick 相同）"
+
+env:
+  scene: bottle_desktop
+  contract: default
+  camera: head_wrist
+  spacemouse: default
+
+observation:
+  image_keys: [head, wrist]
+  proprio_keys: [tcp_pose, tcp_vel, joint_pos, hand_joints]
+
+action:
+  mode: left_arm_6d
+
+wrappers:
+  intervention: true
+  serl_obs: true
+  obs_horizon: 1
+  act_exec_horizon: null
+
+reward:
+  mode: constant_zero
+  classifier_keys: null
+
+training:
+  agent: drq
+  setup_mode: single-arm-fixed-gripper
+  encoder_type: resnet-pretrained
+  discount: 0.95
+  batch_size: 128
+  max_steps: 1000000
+  replay_buffer_capacity: 200000
+  random_steps: 0
+  training_starts: 100
+  steps_per_update: 50
+  buffer_period: 1000
+  checkpoint_period: 5000

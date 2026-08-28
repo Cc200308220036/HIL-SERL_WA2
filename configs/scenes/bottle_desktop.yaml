@@ -1,0 +1,97 @@
+# WA2 任务场景标定（复制本文件改名即可换任务）
+#
+# 用法：
+#   1) 复制本文件为 configs/scenes/<你的任务>.yaml
+#   2) 只改下面「可粘贴数值区」
+#   3) Env 构造：WA2Env(..., scene_path=".../<你的任务>.yaml")
+#      或：WA2Env(..., scene_name="bottle_desktop")  # 包内 scenes 目录
+#
+# 开局 20 维（reset 会走到这些值）：
+#   home_joints_left  : 左臂 8 维  joint_states[0:8]
+#   home_joints_neck  : 颈部 2 维  joint_states[16:18]  Neck_Z, Neck_Y
+#   home_joints_waist : 腰部 4 维  joint_states[18:22]
+#   hand_reset        : 左手 6 维
+# ROS 完整 upperlimb 是 22 维（中间 [8:16] 为右臂，本任务不复位）。
+# task_reset_tcp 与上述 home 同一姿态；reset 后做容差校验，默认不再 MoveL。
+
+scene_id: bottle_desktop
+display_name: "桌面抓瓶抬起（头相机可见区随机瓶位）"
+date: "2026-08-15"
+arm: left
+
+# ========== 可粘贴数值区（现场标定后整段替换） ==========
+home_joints_left:
+  - -0.30768299878218386
+  - -0.5839074063123917
+  - 0.09217067631198006
+  - 0.1516603703976216
+  - -1.4151987626698201
+  - -0.08777246564932284
+  - -0.04094831780571215
+  - 0.17150316234507262
+
+home_joints_neck:
+  - -0.01114473619365148
+  - 0.25312487271017603
+
+home_joints_waist:
+  - 0.005830325578699558
+  - 0.0023489081468142103
+  - 0.0009407616812495689
+  - 0.6377884829862523
+
+# 与 home 同一姿态时的 TCP（2026-08-15 现场读数）
+task_reset_tcp:
+  - 0.524741667941445
+  - 0.16309660486546385
+  - 0.5670521946796965
+  - 0.02815621973145163
+  - -0.6464853497146124
+  - 0.010224212187116638
+  - 0.7623381043736186
+
+hand_reset: [0.1, 0.9, 0.3, 0.3, 0.3, 0.3]
+# ========== 可粘贴数值区结束 ==========
+
+# 工作区：本任务不设桌面 XY 硬盒，瓶位 = 头相机可见桌面 + 人工确认
+workspace:
+  policy: head_camera_visible_desktop
+  xy_min: null
+  xy_max: null
+
+# 腰 / 颈：A=auto_movej | B=check_only | C=manual
+waist_policy: auto_movej
+neck_policy: auto_movej
+
+# reset 路径：hand → waist MoveJ → neck MoveJ → left MoveJ → 校验 TCP（可选 MoveL）
+reset:
+  do_movel_to_tcp: false
+  require_human_confirm: true
+  max_retries: 1
+  total_timeout_s: 60.0
+  hand_timeout_s: 10.0
+  waist_timeout_s: 30.0
+  neck_timeout_s: 15.0
+  arm_timeout_s: 30.0
+  movej_v: 0.15
+  movej_acc: 0.25
+  tolerances:
+    joint_tol_rad: 0.05
+    waist_tol_rad: 0.05
+    neck_tol_rad: 0.05
+    hand_tol_rad: 0.1
+    tcp_pos_tol_m: 0.01
+    tcp_rot_tol_deg: 5.0
+
+# 覆盖契约 episode.max_steps。单局平移/旋转盒默认关闭（null）：
+# 采集与后续 HIL 长干预不能被 3cm 盒截断。单步仍是 1mm / 0.25°。
+# R4 门禁脚本自行传入 3cm/5°，不走本场景。
+episode:
+  max_steps: 4000
+  trans_limit_m: null
+  rot_limit_deg: null
+
+notes: |
+  20 维 home：左臂 8 + 颈 2 + 腰 4 + 左手 6。
+  home 与 task_reset_tcp 同一姿态；弯腰+低头为抓取前提。
+  标定日期：2026-08-15；腰/颈策略 A；max_steps=4000（约 80s，抓放各一次）。

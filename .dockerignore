@@ -1,0 +1,30 @@
+# 默认排除所有文件，只允许HIL-SERL Actor镜像所需构建输入。
+**
+
+!docker/
+docker/*
+!docker/dockerfile
+!docker/actor-requirements.txt
+!docker/entrypoint.hilserl.sh
+!docker/verify_hil_actor.py
+!docker/verify_agentlace.py
+
+!artifacts/
+artifacts/*
+!artifacts/wheels/
+artifacts/wheels/*
+!artifacts/wheels/agentlace-0.1.3-py3-none-any.whl
+!artifacts/wheels/SHA256SUMS
+
+!catkin_ws/
+catkin_ws/*
+!catkin_ws/src/
+catkin_ws/src/*
+!catkin_ws/src/hil-serl-main/
+!catkin_ws/src/hil-serl-main/**
+
+# 源码快照不携带嵌套Git历史和运行缓存。
+**/.git
+**/.git/**
+**/__pycache__/
+**/*.py[cod]

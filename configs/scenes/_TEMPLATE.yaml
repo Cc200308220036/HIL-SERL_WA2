@@ -1,0 +1,78 @@
+# 新任务场景模板：复制为 <task_name>.yaml 后只改「可粘贴数值区」
+#
+#   cp _TEMPLATE.yaml my_task.yaml
+#   # 编辑 my_task.yaml
+#   WA2Env(..., scene_name="my_task")
+
+scene_id: my_task
+display_name: "新任务（请改名）"
+date: "YYYY-MM-DD"
+arm: left
+
+# ========== 可粘贴数值区 ==========
+home_joints_left:
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+
+home_joints_neck:
+  - 0.0
+  - 0.0
+
+home_joints_waist:
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+
+task_reset_tcp:
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 1.0
+
+hand_reset: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+# ========== 可粘贴数值区结束 ==========
+
+workspace:
+  policy: head_camera_visible_desktop
+  xy_min: null
+  xy_max: null
+
+waist_policy: auto_movej   # A=auto_movej | B=check_only | C=manual
+neck_policy: auto_movej    # A=auto_movej | B=check_only | C=manual
+
+reset:
+  do_movel_to_tcp: false
+  require_human_confirm: true
+  max_retries: 1
+  total_timeout_s: 60.0
+  hand_timeout_s: 10.0
+  waist_timeout_s: 30.0
+  neck_timeout_s: 15.0
+  arm_timeout_s: 30.0
+  movej_v: 0.15
+  movej_acc: 0.25
+  tolerances:
+    joint_tol_rad: 0.05
+    waist_tol_rad: 0.05
+    neck_tol_rad: 0.05
+    hand_tol_rad: 0.1
+    tcp_pos_tol_m: 0.01
+    tcp_rot_tol_deg: 5.0
+
+episode:
+  max_steps: 1200
+  # 单局盒默认关闭。仅 R4 类短行程门禁需要数值；任务采集/干预保持 null。
+  trans_limit_m: null
+  rot_limit_deg: null
+
+notes: ""

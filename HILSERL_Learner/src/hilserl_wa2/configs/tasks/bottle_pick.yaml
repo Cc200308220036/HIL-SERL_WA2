@@ -1,0 +1,45 @@
+# 第一个真机实验流程任务（R8 fake_env / R9 起真机）。
+# 场景引用 R5 已验收的 bottle_desktop，不改场景文件名。
+schema_version: "1"
+task_id: bottle_pick
+display_name: "桌面抓瓶抬起（真机实验流程第一个任务）"
+
+env:
+  scene: bottle_desktop
+  contract: default
+  camera: head_wrist
+  spacemouse: default
+
+observation:
+  image_keys: [head, wrist]
+  proprio_keys: [tcp_pose, tcp_vel, joint_pos, hand_joints]
+
+action:
+  mode: left_arm_6d
+
+wrappers:
+  intervention: true
+  serl_obs: true
+  obs_horizon: 1
+  act_exec_horizon: null
+
+reward:
+  mode: constant_zero
+  classifier_keys: [head, wrist]
+  # 10 Hz high-level evaluation: one positive decision is about 100 ms.
+  classifier_consecutive_n: 1
+
+training:
+  agent: drq
+  setup_mode: single-arm-learned-gripper
+  encoder_type: resnet-pretrained
+  # Paper-aligned 10 Hz high-level transition scale (hybrid 6D+1D task).
+  discount: 0.98
+  batch_size: 256
+  max_steps: 1000000
+  replay_buffer_capacity: 200000
+  random_steps: 0
+  training_starts: 100
+  steps_per_update: 50
+  buffer_period: 1000
+  checkpoint_period: 5000

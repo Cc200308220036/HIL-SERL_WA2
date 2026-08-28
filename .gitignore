@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# JAX / ML runtime caches
+.jax_cache*/
+wandb/
+
+# ROS / catkin generated output
+build/
+devel/
+install/
+log/
+logs/
+
+# Experiment output
+runs/
+checkpoints/
+videos/
+*.bag
+
+# Local image/download cache
+/cache/
+/*.tar
+/*.tar.gz
+
+# Local editor and OS files
+.vscode/
+.idea/
+.DS_Store
+
+# Secrets and machine-local configuration
+.env
+.env.*
+!.env.example
+
+# Collected demos & experiment data
+demos/
+failed/
+r6_samples/
+*.pkl
+
+# Upstream docs images (large)
+catkin_ws/src/hil-serl-main/docs/images/
+
+# Local Claude Code / OS junk
+.claude/
+.Trash-1000/

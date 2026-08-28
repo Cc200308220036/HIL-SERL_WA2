@@ -1,0 +1,8 @@
+    secs: 1786426858
+    nsecs: 484102964
+  frame_id: "realsense_head_color_optical_frame"
+height: 720
+width: 1280
+encoding: "rgb8"
+is_bigendian: 0
+step: 3840

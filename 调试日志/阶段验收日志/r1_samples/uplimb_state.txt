@@ -1,0 +1,120 @@
+header: 
+  seq: 1958198
+  stamp: 
+    secs: 1786426202
+    nsecs: 662745148
+  frame_id: ''
+cmd_num: 0
+cmd_name: "STOPPED"
+left_arm_is_singular: True
+right_arm_is_singular: True
+iddp_status: True
+---
+header: 
+  seq: 1958199
+  stamp: 
+    secs: 1786426202
+    nsecs: 670743870
+  frame_id: ''
+cmd_num: 0
+cmd_name: "STOPPED"
+left_arm_is_singular: True
+right_arm_is_singular: True
+iddp_status: True
+---
+header: 
+  seq: 1958200
+  stamp: 
+    secs: 1786426202
+    nsecs: 678743148
+  frame_id: ''
+cmd_num: 0
+cmd_name: "STOPPED"
+left_arm_is_singular: True
+right_arm_is_singular: True
+iddp_status: True
+---
+header: 
+  seq: 1958201
+  stamp: 
+    secs: 1786426202
+    nsecs: 686744855
+  frame_id: ''
+cmd_num: 0
+cmd_name: "STOPPED"
+left_arm_is_singular: True
+right_arm_is_singular: True
+iddp_status: True
+---
+header: 
+  seq: 1958202
+  stamp: 
+    secs: 1786426202
+    nsecs: 694743267
+  frame_id: ''
+cmd_num: 0
+cmd_name: "STOPPED"
+left_arm_is_singular: True
+right_arm_is_singular: True
+iddp_status: True
+---
+header: 
+  seq: 1958203
+  stamp: 
+    secs: 1786426202
+    nsecs: 702743146
+  frame_id: ''
+cmd_num: 0
+cmd_name: "STOPPED"
+left_arm_is_singular: True
+right_arm_is_singular: True
+iddp_status: True
+---
+header: 
+  seq: 1958204
+  stamp: 
+    secs: 1786426202
+    nsecs: 710743896
+  frame_id: ''
+cmd_num: 0
+cmd_name: "STOPPED"
+left_arm_is_singular: True
+right_arm_is_singular: True
+iddp_status: True
+---
+header: 
+  seq: 1958205
+  stamp: 
+    secs: 1786426202
+    nsecs: 718742612
+  frame_id: ''
+cmd_num: 0
+cmd_name: "STOPPED"
+left_arm_is_singular: True
+right_arm_is_singular: True
+iddp_status: True
+---
+header: 
+  seq: 1958206
+  stamp: 
+    secs: 1786426202
+    nsecs: 726743203
+  frame_id: ''
+cmd_num: 0
+cmd_name: "STOPPED"
+left_arm_is_singular: True
+right_arm_is_singular: True
+iddp_status: True
+---
+header: 
+  seq: 1958207
+  stamp: 
+    secs: 1786426202
+    nsecs: 734743593
+  frame_id: ''
+cmd_num: 0
+cmd_name: "STOPPED"
+left_arm_is_singular: True
+right_arm_is_singular: True
+iddp_status: True
+---

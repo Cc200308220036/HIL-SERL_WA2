@@ -1,0 +1,11 @@
+schema_version: 1
+profile_id: lab_lan
+learner_ip: REPLACE_WITH_LEARNER_IPV4
+actor_ip: REPLACE_WITH_ORIN_IPV4
+request_port: 5588
+broadcast_port: 5589
+request_timeout_ms: 3000
+network_max_age_s: 5.0
+upload_every_steps: 10
+allowed_actor_cidr: REPLACE_WITH_ORIN_IPV4/32
+

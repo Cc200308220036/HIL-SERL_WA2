@@ -1,0 +1,38 @@
+# R6 dual-camera config (ROS topics only; do not open USB in Env)
+#
+# crop: [y0, y1, x0, x1] relative to raw image, or null for full frame
+# classifier defaults to wrist near-view crop (can match policy)
+
+version: "0.1.0"
+date: "2026-08-12"
+
+cameras:
+  head:
+    topic: "/zj_humanoid/sensor/realsense_head/color/image_raw"
+    enabled: true
+    expected_encoding: rgb8
+    raw_shape: [720, 1280, 3]
+    policy_crop: null
+    classifier_crop: null
+    serial: null   # fill from device_info when available
+
+  wrist:
+    topic: "/zj_humanoid/sensor/left_wrist/image_raw"
+    enabled: true
+    expected_encoding: bgr8
+    raw_shape: [720, 1280, 3]
+    policy_crop: null
+    classifier_crop: null
+    serial: null
+
+output:
+  shape: [128, 128, 3]
+  dtype: uint8
+  color_space: rgb
+
+freshness:
+  image_max_age_s: 0.2
+
+roles:
+  policy_keys: [head, wrist]
+  classifier_prefer: wrist

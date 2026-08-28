@@ -1,0 +1,86 @@
+# SpaceMouse / Joy 运行配置（R7+）
+# 框架默认：WA2SpacemouseIntervention / start_spacemouse_joy / teleop_from_yaml
+# 与 0810 标定及 SpaceMouse使用指南 默认映射一致
+#
+# 采集前优先改本文件「调参区」。两套链路读的字段不同：
+#   Actor / R11 Intervention → input.* + intervention.action_gain
+#     物理速度上限仍是 Env 契约 max_pos_delta_m=1.5mm/步（约 75mm/s），不是 teleop.linear_scale
+#   独立遥操 spacemouse_wa2_teleop → teleop.linear_scale / max_step_m / hand.grasp_target
+# 更快的遥操试抓可用 stem=collect：run_spacemouse_teleop_from_yaml.py --config collect
+
+version: "0.1.2"
+date: "2026-08-17"
+
+joy:
+  topic: "/spacenav/joy"
+  max_age_s: 0.2
+
+buttons:
+  deadman: 1    # 左键：toggle 下点按进入/退出 SpaceMouse 控制
+  hand: 0       # 右键：点按抓/放（Intervention 记入 info，recorder/HIL 调 request_hand）
+  session_mode: toggle  # toggle=点按进入/退出；hold=按住才动（旧 deadman）
+
+# ========== 调参区：手爪抓取 / 释放姿态（右键）==========
+# 顺序：THUMB_MP, THUMB_CMC, INDEX_MCP, MIDDLE_MCP, RING_MCP, LITTLE_MCP
+# 数值越大通常越合拢。先用 test_hand.py --target 试，再回写这里。
+# release_target 全 0 → SDK release_hand() 全张；非全 0 → grasp_hand(半开)。
+# teleop.initial_hand_state: auto | released | grasped（后两者不要求当前在全 0）。
+hand:
+  grasp_target: [0.1, 0.9, 0.7, 0.7, 0.4, 0.4]
+  release_target: [0.1, 0.9, 0.3, 0.3, 0.3, 0.3]
+
+# 映射到 Env 归一化 6D action（SpaceMouseInputProcessor）
+input:
+  axis_map: [0, 1, 2, 3, 4, 5]
+  axis_sign: [-1.0, -1.0, 1.0, 1.0, -1.0, -1.0]
+  translation_deadzone: 0.15
+  rotation_deadzone: 0.18
+  translation_curve_mix: 0.25
+  rotation_curve_mix: 0.45
+  translation_filter_tau: 0.06
+  rotation_filter_tau: 0.10
+  translation_enter_threshold: 0.35
+  rotation_enter_threshold: 0.65
+  intent_exit_threshold: 0.20
+  group_switch_hysteresis: 0.15
+  # 标定右移 |Y|-|Z|≈0.13；滞回须大于该耦合差，否则主轴来回抢。
+  axis_switch_hysteresis: 0.25
+  # 组内次轴 ≥ 主轴该比例才同时输出（约 42°+ 斜向）。右移 Z 耦合 ~0.87 仍被压。
+  secondary_axis_ratio: 0.90
+
+intervention:
+  intervene_eps: 0.001
+  control_dt: 0.02
+  auto_start_ros: true
+  # Actor/R11：同样推杆更接近满幅 [-1,1]。>1 只会更快饱和，不能超过 Env 1.5mm/步。
+  # 允许 (0, 3]。采集想更「跟手」可试 1.3～1.8。
+  action_gain: 1.5
+
+# 仅 spacemouse_wa2_teleop / run_spacemouse_teleop_from_yaml 使用（直连 ServoL）
+# 安全上限：linear_scale≤0.03，max_step_m≤0.002
+teleop:
+  arm_side: left
+  execute: true
+  hand_execute: true
+  axis_enable: [1, 1, 1, 1, 1, 1]
+  publish_rate: 50.0
+  watchdog: 0.25
+  tcp_watchdog: 0.25
+  state_watchdog: 0.25
+  linear_scale: 0.010      # 杆量→速度；加大更跟手。采集试速见 collect.yaml
+  angular_scale: 0.08
+  max_step_m: 0.0005       # 每周期平移硬顶（当前 0.5mm < Env 的 1mm）
+  max_angular_step: 0.002
+  workspace_m: 0.04
+  rotation_limit_deg: 10.0
+  rotation_frame: tool
+  hand_cooldown: 1.0
+  hand_neutral_threshold: 0.08
+  initial_hand_state: auto
+
+launch:
+  ensure_spacenavd: true
+  ensure_spacenav_node: true
+  spacenav_node_package: spacenav_node
+  spacenav_node_binary: spacenav_node
+  joy_hz_check_s: 3.0

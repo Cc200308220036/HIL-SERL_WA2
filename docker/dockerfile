@@ -1,0 +1,138 @@
+# HIL-SERL Orin Actor镜像
+#
+# 从仓库根目录构建，避免把4 GB以上的本地缓存发送给Docker daemon：
+#   cd /home/naviai/hilserl_orin
+#   docker build --network host \
+#     -f docker/dockerfile \
+#     -t hilserl:actor-v1 .
+#
+# 本镜像基于assembly已使用的ros1_docker:latest，只固化新增的hil-actor
+# 环境和一份HIL-SERL源码快照，不依赖assembly容器的可写层。
+
+ARG BASE_IMAGE=ros1_docker:latest
+FROM ${BASE_IMAGE}
+
+ARG CONDA_FORGE_CHANNEL=https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
+ARG CONDA_MAIN_CHANNEL=https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
+ARG PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple
+ARG PIP_EXTRA_INDEX_URL=https://pypi.org/simple
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+LABEL org.opencontainers.image.title="HIL-SERL Orin Actor" \
+      org.opencontainers.image.description="Validated HIL-SERL Actor runtime for Jetson Orin" \
+      hilserl.environment="hil-actor" \
+      hilserl.baseline-date="2026-08-06"
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    TZ=Asia/Shanghai \
+    LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8 \
+    NVIDIA_VISIBLE_DEVICES=all \
+    NVIDIA_DRIVER_CAPABILITIES=graphics,utility,compute \
+    HIL_ACTOR_ENV=/opt/conda/envs/hil-actor \
+    HILSERL_HOME=/root/catkin_ws \
+    HILSERL_IMAGE_SOURCE=/opt/hilserl/src/hil-serl-main \
+    APP_HOME=/root/catkin_ws \
+    CONDA_DEFAULT_ENV=hil-actor \
+    VIRTUAL_ENV=/opt/conda/envs/hil-actor \
+    PATH=/opt/conda/envs/hil-actor/bin:/opt/conda/bin:${PATH} \
+    PYTHONNOUSERSITE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    XLA_FLAGS=--xla_gpu_autotune_level=0 \
+    XLA_PYTHON_CLIENT_PREALLOCATE=false \
+    XLA_PYTHON_CLIENT_MEM_FRACTION=0.1 \
+    TF_CPP_MIN_LOG_LEVEL=2 \
+    PYTHONPATH=/root/catkin_ws/src/hil-serl-main/serl_launcher:/root/catkin_ws/src/hil-serl-main/examples:/root/catkin_ws/src/hil-serl-main:/opt/hilserl/src/hil-serl-main/serl_launcher:/opt/hilserl/src/hil-serl-main/examples:/opt/hilserl/src/hil-serl-main
+
+WORKDIR /opt/hilserl
+
+# 基础镜像必须保留ROS、CUDA、Conda及原有模型环境。
+RUN test "$(uname -m)" = "aarch64" \
+    && test -x /opt/conda/bin/conda \
+    && test -d /usr/local/cuda \
+    && (test -f /opt/ros/noetic/setup.bash \
+        || test -f /ros_noetic/catkin_ws/devel/setup.bash) \
+    && for env_name in camera rl_screw rlpd sam seg fdpose; do \
+        test -x "/opt/conda/envs/${env_name}/bin/python"; \
+    done \
+    && test ! -e /opt/conda/envs/hil-actor
+
+# 创建与真机验收环境一致的Python基础环境，并通过Conda安装完整ARM64 OpenCV。
+RUN /opt/conda/bin/conda create -y -n hil-actor \
+        --override-channels \
+        --channel "${CONDA_FORGE_CHANNEL}" \
+        --channel "${CONDA_MAIN_CHANNEL}" \
+        python=3.10.20 \
+        pip=26.2 \
+        setuptools=83.0.0 \
+        wheel=0.47.0 \
+        packaging=26.2 \
+    && /opt/conda/bin/conda install -y -n hil-actor \
+        --freeze-installed \
+        --override-channels \
+        --channel "${CONDA_MAIN_CHANNEL}" \
+        --channel "${CONDA_FORGE_CHANNEL}" \
+        "opencv=4.10.0=py310h13dd31d_7"
+
+# 完整Actor依赖已经逐项固定；--no-deps防止pip重新解析并改变版本组合。
+COPY docker/actor-requirements.txt /opt/hilserl/actor-requirements.txt
+
+RUN /opt/conda/envs/hil-actor/bin/python -m pip install \
+        --no-deps \
+        --index-url "${PIP_INDEX_URL}" \
+        --extra-index-url "${PIP_EXTRA_INDEX_URL}" \
+        -r /opt/hilserl/actor-requirements.txt
+
+# Agentlace使用修正依赖元数据的本地wheel，安装前必须验证完整性。
+COPY artifacts/wheels/agentlace-0.1.3-py3-none-any.whl \
+     artifacts/wheels/SHA256SUMS \
+     /opt/hilserl/wheels/
+
+RUN cd /opt/hilserl/wheels \
+    && sha256sum --check SHA256SUMS \
+    && /opt/conda/envs/hil-actor/bin/python -m pip install \
+        --no-deps \
+        /opt/hilserl/wheels/agentlace-0.1.3-py3-none-any.whl
+
+# 镜像内保留一份可独立运行的HIL-SERL快照。
+# 运行时挂载的/root/catkin_ws源码通过PYTHONPATH优先于该快照，便于继续开发。
+COPY catkin_ws/src/hil-serl-main /opt/hilserl/src/hil-serl-main
+
+RUN /opt/conda/envs/hil-actor/bin/python -m pip install \
+        --no-deps \
+        --no-build-isolation \
+        /opt/hilserl/src/hil-serl-main/serl_launcher
+
+# 构建阶段进行CPU可完成的验收；GPU设备检查留到容器启动后执行。
+COPY docker/verify_hil_actor.py \
+     docker/verify_agentlace.py \
+     /opt/hilserl/verify/
+
+RUN /opt/conda/envs/hil-actor/bin/python -m pip check \
+    && /opt/conda/envs/hil-actor/bin/python \
+        /opt/hilserl/verify/verify_hil_actor.py --skip-gpu \
+    && /opt/conda/envs/hil-actor/bin/python \
+        /opt/hilserl/verify/verify_agentlace.py \
+    && /opt/conda/envs/hil-actor/bin/python -c \
+        "import jax; import tensorflow, tf_keras, tensorflow_probability, distrax, agentlace, wandb, matplotlib, serl_launcher; from serl_launcher.agents.continuous.sac import SACAgent; from serl_launcher.utils.launcher import make_trainer_config; print('HIL-SERL ACTOR CORE IMPORT: PASS')" \
+    && /opt/conda/bin/conda clean -afy \
+    && rm -rf /root/.cache/pip
+
+# 自动激活hil-actor并加载ROS环境。
+COPY docker/entrypoint.hilserl.sh /usr/local/bin/entrypoint.hilserl
+
+RUN chmod 0755 /usr/local/bin/entrypoint.hilserl \
+    && mkdir -p /root/catkin_ws/src \
+    && printf '%s\n' \
+        'source /opt/conda/etc/profile.d/conda.sh' \
+        'conda activate hil-actor' \
+        'if [ -f /opt/ros/noetic/setup.bash ]; then source /opt/ros/noetic/setup.bash; fi' \
+        'if [ -f /ros_noetic/catkin_ws/devel/setup.bash ]; then source /ros_noetic/catkin_ws/devel/setup.bash; fi' \
+        'if [ -f /root/catkin_ws/devel/setup.bash ]; then source /root/catkin_ws/devel/setup.bash; fi' \
+        >> /root/.bashrc
+
+WORKDIR /root/catkin_ws
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.hilserl"]
+CMD ["/bin/bash"]

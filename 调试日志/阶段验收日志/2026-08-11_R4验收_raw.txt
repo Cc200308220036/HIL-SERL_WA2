@@ -1,0 +1,19 @@
+----------------------------------------------------------------------
+Ran 54 tests in 0.648s
+
+OK
+PASS: check_env
+PASS: random_1000 + close idempotent
+PASS: fake_env isolation
+PASS: seed_repro
+PASS: wrist_zero_image
+R2 GATE: PASS
+PASS: lateral_isolation + copy
+PASS: reset {'tcp_pose': (7,), 'tcp_vel': (6,), 'joint_pos': (8,), 'hand_joints': (6,)} singular= False
+tcp_drift_m 3.818263576249592e-05
+PASS: readonly_smoke
+PASS: stale_gate ['tcp_pose']
+R3 GATE: PASS
+PASS: integrate limits
+PASS: env dry_run steps
+R4_DRYRUN: PASS

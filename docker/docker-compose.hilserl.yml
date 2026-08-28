@@ -1,0 +1,50 @@
+services:
+  hilserl:
+    # 当前复现阶段继续使用基础镜像，不触发派生镜像构建。
+    image: ros1_docker:latest
+    container_name: hilserl
+
+    runtime: nvidia
+    privileged: true
+    network_mode: host
+
+    environment:
+      DISPLAY: ${DISPLAY:-:0}
+      QT_X11_NO_MITSHM: "1"
+      TZ: Asia/Shanghai
+
+      ROS_MASTER_URI: ${ROS_MASTER_URI:-http://192.168.217.1:11311}
+      ROS_HOSTNAME: ${ROS_HOSTNAME:-192.168.217.100}
+      ROS_IP: ${ROS_IP:-192.168.217.100}
+
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: all
+      LD_LIBRARY_PATH: /usr/local/cuda/lib64:/usr/lib/aarch64-linux-gnu/nvidia:/usr/lib/aarch64-linux-gnu
+
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      # 本地与容器使用同名 catkin_ws，目录内容双向同步。
+      - /home/naviai/hilserl_orin/catkin_ws:/root/catkin_ws
+
+      - /usr/lib/aarch64-linux-gnu/libcudnn.so.9:/usr/lib/aarch64-linux-gnu/libcudnn.so.9:ro
+      - /usr/lib/aarch64-linux-gnu/libcudnn.so.9.3.0:/usr/lib/aarch64-linux-gnu/libcudnn.so.9.3.0:ro
+      - /usr/lib/aarch64-linux-gnu/libcudnn_ops.so.9:/usr/lib/aarch64-linux-gnu/libcudnn_ops.so.9:ro
+      - /usr/lib/aarch64-linux-gnu/libcudnn_ops.so.9.3.0:/usr/lib/aarch64-linux-gnu/libcudnn_ops.so.9.3.0:ro
+      - /usr/lib/aarch64-linux-gnu/libcudnn_cnn.so.9:/usr/lib/aarch64-linux-gnu/libcudnn_cnn.so.9:ro
+      - /usr/lib/aarch64-linux-gnu/libcudnn_cnn.so.9.3.0:/usr/lib/aarch64-linux-gnu/libcudnn_cnn.so.9.3.0:ro
+      - /usr/lib/aarch64-linux-gnu/libcudnn_adv.so.9:/usr/lib/aarch64-linux-gnu/libcudnn_adv.so.9:ro
+      - /usr/lib/aarch64-linux-gnu/libcudnn_adv.so.9.3.0:/usr/lib/aarch64-linux-gnu/libcudnn_adv.so.9.3.0:ro
+      - /usr/lib/aarch64-linux-gnu/libcudnn_graph.so.9:/usr/lib/aarch64-linux-gnu/libcudnn_graph.so.9:ro
+      - /usr/lib/aarch64-linux-gnu/libcudnn_graph.so.9.3.0:/usr/lib/aarch64-linux-gnu/libcudnn_graph.so.9.3.0:ro
+      - /usr/lib/aarch64-linux-gnu/libcudnn_heuristic.so.9:/usr/lib/aarch64-linux-gnu/libcudnn_heuristic.so.9:ro
+      - /usr/lib/aarch64-linux-gnu/libcudnn_heuristic.so.9.3.0:/usr/lib/aarch64-linux-gnu/libcudnn_heuristic.so.9.3.0:ro
+      - /usr/lib/aarch64-linux-gnu/libcudnn_engines_precompiled.so.9:/usr/lib/aarch64-linux-gnu/libcudnn_engines_precompiled.so.9:ro
+      - /usr/lib/aarch64-linux-gnu/libcudnn_engines_precompiled.so.9.3.0:/usr/lib/aarch64-linux-gnu/libcudnn_engines_precompiled.so.9.3.0:ro
+      - /usr/lib/aarch64-linux-gnu/libcudnn_engines_runtime_compiled.so.9:/usr/lib/aarch64-linux-gnu/libcudnn_engines_runtime_compiled.so.9:ro
+      - /usr/lib/aarch64-linux-gnu/libcudnn_engines_runtime_compiled.so.9.3.0:/usr/lib/aarch64-linux-gnu/libcudnn_engines_runtime_compiled.so.9.3.0:ro
+
+      - /dev:/dev
+      - /dev/bus/usb:/dev/bus/usb
+
+    stdin_open: true
+    tty: true

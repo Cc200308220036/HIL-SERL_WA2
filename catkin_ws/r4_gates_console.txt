@@ -1,0 +1,38 @@
+[INFO] [1786434121.199009]: ArmController初始化完成: wa2
+{'gate': 'hold', 'drift_m': 2.0978124666726217e-05, 'ok': True}
+HOLD: PASS 2.0978124666726217e-05
+[INFO] [1786434128.301239]: ArmController初始化完成: wa2
+{'gate': 'trans_x_plus', 'delta_axis_m': 0.0, 'tracking_err_m': 0.0009999871253967285, 'ok': False}
+{'gate': 'trans_x_minus', 'delta_axis_m': 0.000620722770690918, 'tracking_err_m': 0.0006679960642941296, 'ok': False}
+{'gate': 'trans_x_net', 'net_m': 0.0006679960642941296, 'ok': True}
+TRANS_X: PASS
+[INFO] [1786434130.566002]: ArmController初始化完成: wa2
+{'gate': 'trans_y_plus', 'delta_axis_m': -3.3721327781677246e-05, 'tracking_err_m': 0.0010000020265579224, 'ok': False}
+{'gate': 'trans_y_minus', 'delta_axis_m': 0.0005022287368774414, 'tracking_err_m': 0.0005038799718022346, 'ok': False}
+{'gate': 'trans_y_net', 'net_m': 0.0005038799718022346, 'ok': True}
+TRANS_Y: PASS
+[INFO] [1786434132.822247]: ArmController初始化完成: wa2
+{'gate': 'trans_z_plus', 'delta_axis_m': 0.0, 'tracking_err_m': 0.0009999871253967285, 'ok': False}
+{'gate': 'trans_z_minus', 'delta_axis_m': 0.0008161067962646484, 'tracking_err_m': 0.0007561704842373729, 'ok': False}
+{'gate': 'trans_z_net', 'net_m': 0.000825259427074343, 'ok': True}
+TRANS_Z: PASS
+[INFO] [1786434135.079467]: ArmController初始化完成: wa2
+{'gate': 'rot_roll_plus', 'pos_drift_m': 0.00016285972378682345, 'tracking_err_rad': 0.01585006177696683, 'ok': True}
+{'gate': 'rot_roll_minus', 'pos_drift_m': 0.0003736201033461839, 'tracking_err_rad': 0.018560297703805496, 'ok': True}
+ROT_ROLL: PASS
+[INFO] [1786434137.481658]: ArmController初始化完成: wa2
+{'gate': 'rot_pitch_plus', 'pos_drift_m': 0.00018247189291287214, 'tracking_err_rad': 0.015047480424743964, 'ok': True}
+{'gate': 'rot_pitch_minus', 'pos_drift_m': 0.0003496205317787826, 'tracking_err_rad': 0.014943161839369907, 'ok': True}
+ROT_PITCH: PASS
+[INFO] [1786434139.922255]: ArmController初始化完成: wa2
+{'gate': 'rot_yaw_plus', 'pos_drift_m': 0.00011733722203643993, 'tracking_err_rad': 0.018491473692950434, 'ok': True}
+{'gate': 'rot_yaw_minus', 'pos_drift_m': 0.0003319037496112287, 'tracking_err_rad': 0.019953776660502104, 'ok': True}
+ROT_YAW: PASS
+[INFO] [1786434142.326376]: ArmController初始化完成: wa2
+{'gate': 'clip', 'moved_m': 0.0, 'delta_pos_m': 0.001, 'ok': True}
+CLIP: PASS 0.0
+[INFO] [1786434144.384588]: ArmController初始化完成: wa2
+{'gate': 'crash_stop', 'stop_ok': True, 'clear_ok': True, 'ok': True}
+CRASH_STOP: PASS (software stop+clear; physical e-stop not tested)
+R4 GATES: PASS
+wrote /root/catkin_ws/r4_gates_out.txt

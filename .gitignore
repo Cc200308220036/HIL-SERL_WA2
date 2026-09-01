@@ -41,6 +41,7 @@ videos/
 demos/
 failed/
 r6_samples/
+r1_samples/
 *.pkl
 
 # Upstream docs images (large)

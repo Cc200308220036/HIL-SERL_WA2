@@ -1,8 +1,0 @@
-Type: unknown type
-
-Publishers: None
-
-Subscribers: 
- * /monitor_node (http://192.168.217.100:22025/)
-
-

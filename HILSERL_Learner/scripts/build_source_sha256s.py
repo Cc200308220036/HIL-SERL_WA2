@@ -16,7 +16,10 @@ INCLUDE_ROOTS = (
     ROOT / "scripts",
     ROOT / "src",
 )
-INCLUDE_FILES = (ROOT / "learner_equriment.txt",)
+# Learner deployment instructions live in the repository-level
+# docs/Learner部署手册.md.  Keep this inventory scoped to the standalone
+# Learner bundle roots above.
+INCLUDE_FILES = ()
 
 
 def _sha256(path: Path) -> str:

@@ -231,6 +231,15 @@ def parse_args(argv=None):
             "watchdog (upload failure still fail-closes). Do not edit local.yaml."
         ),
     )
+    p.add_argument(
+        "--initial-policy-timeout-s",
+        type=float,
+        default=60.0,
+        help=(
+            "Maximum seconds to wait for the first Learner parameter broadcast "
+            "after handshake; env.reset/step are forbidden before it arrives."
+        ),
+    )
     p.add_argument("--control-hz", type=float, default=0.0)
     p.add_argument("--max-seconds", type=float, default=0.0)
     p.add_argument("--classifier-checkpoint", default="")
@@ -477,6 +486,34 @@ def run_actor(args) -> Dict[str, Any]:
             log_level=logging.WARNING,
         )
 
+        initial_policy_ready = threading.Event()
+
+        def update_params(params):
+            nonlocal agent, policy_version
+            try:
+                if agent is not None:
+                    import jax.numpy as jnp
+
+                    tree = jax_mod.tree_util.tree_map(lambda x: jnp.asarray(x), params)
+                    agent = agent.replace(state=agent.state.replace(params=tree))
+                policy_version += 1
+                net_wd.note_update(params_tree_signature(params))
+                if params_watchdog:
+                    net_wd.enabled = True
+                initial_policy_ready.set()
+                print(f"POLICY_VERSION={policy_version}", flush=True)
+            except Exception as exc:
+                ctl.trigger(f"callback_replace_failed:{exc}")
+                stop_flag["on"] = True
+                stop_flag["reason"] = "callback_replace_failed"
+                # Wake the startup barrier so callback failures fail immediately
+                # instead of being reported as a misleading timeout.
+                initial_policy_ready.set()
+
+        # Register before handshake: an accepted handshake asks the Learner to
+        # publish its current parameters immediately.
+        client.recv_network_callback(update_params)
+
         handshake = build_handshake_request(manifest, session.session_id)
         hs_res = client.request("r13-handshake", handshake)
         hs_payload = {}
@@ -506,25 +543,29 @@ def run_actor(args) -> Dict[str, Any]:
             flush=True,
         )
 
-        def update_params(params):
-            nonlocal agent, policy_version
-            try:
-                if agent is not None:
-                    import jax.numpy as jnp
-
-                    tree = jax_mod.tree_util.tree_map(lambda x: jnp.asarray(x), params)
-                    agent = agent.replace(state=agent.state.replace(params=tree))
-                policy_version += 1
-                net_wd.note_update(params_tree_signature(params))
-                if params_watchdog:
-                    net_wd.enabled = True
-                print(f"POLICY_VERSION={policy_version}", flush=True)
-            except Exception as exc:
-                ctl.trigger(f"callback_replace_failed:{exc}")
-                stop_flag["on"] = True
-                stop_flag["reason"] = "callback_replace_failed"
-
-        client.recv_network_callback(update_params)
+        initial_policy_timeout_s = float(args.initial_policy_timeout_s)
+        if initial_policy_timeout_s <= 0.0:
+            raise SystemExit(
+                "R13_ACTOR: FAIL — --initial-policy-timeout-s must be positive"
+            )
+        print(
+            f"INITIAL_POLICY_WAIT timeout_s={initial_policy_timeout_s:g}",
+            flush=True,
+        )
+        deadline = time.monotonic() + initial_policy_timeout_s
+        while not initial_policy_ready.wait(timeout=0.1):
+            if stop_flag["on"] or ctl.result.triggered:
+                break
+            if time.monotonic() >= deadline:
+                ctl.trigger("initial_policy_timeout")
+                break
+        if ctl.result.triggered or policy_version < 1:
+            reason = ctl.result.reason or "initial_policy_unavailable"
+            raise SystemExit(
+                f"R13_ACTOR: FAIL — no valid Learner parameters before env.reset "
+                f"(reason={reason})"
+            )
+        print(f"INITIAL_POLICY_READY version={policy_version}", flush=True)
 
         obs, reset_info = env.reset(seed=0, options=reset_opts)
         print(f"RESET_MODE={reset_info.get('reset_mode', reset_info.get('reset_ok'))}", flush=True)
@@ -766,8 +807,9 @@ def run_actor(args) -> Dict[str, Any]:
                 )
             if info.get("succeed"):
                 print(
-                    f"SUCCEED episode_return={episode_return:.3f} "
-                    f"intervention_steps={intvn_steps} policy_version={policy_version}",
+                    #f"SUCCEED episode_return={episode_return:.3f} "
+                    f"\033[91mSUCCEED episode_return={episode_return:.3f} "
+                    f"intervention_steps={intvn_steps} policy_version={policy_version}\033[0m",
                     flush=True,
                 )
 

@@ -1080,11 +1080,38 @@ def main() -> None:
             return {"success": True, "payload": payload()}
         if kind == "r13-handshake":
             result = compare_handshake(manifest, request or {})
+            publish_error = None
+            if result["accepted"]:
+                try:
+                    # Actor registers its network callback before handshake and
+                    # must receive these parameters before env.reset/step. This
+                    # also bootstraps fresh runs that have not reached
+                    # training_starts and therefore have no periodic publish yet.
+                    server.publish_network(agent.state.params)
+                except Exception as exc:  # noqa: BLE001
+                    publish_error = f"{type(exc).__name__}: {exc}"
+                    result = {
+                        **result,
+                        "accepted": False,
+                        "mismatches": {
+                            **dict(result.get("mismatches") or {}),
+                            "initial_policy_publish": {
+                                "expected": "success",
+                                "received": publish_error,
+                            },
+                        },
+                    }
             with lock:
                 state["handshake_accepted"] = bool(result["accepted"])
                 if result["accepted"]:
                     state["accepted_session_id"] = result["session_id"]
+                    state["publish_count"] += 1
             print(f"R13_HANDSHAKE: {'PASS' if result['accepted'] else 'FAIL'}", flush=True)
+            if result["accepted"]:
+                print(
+                    f"INITIAL_POLICY_PUBLISHED count={state['publish_count']}",
+                    flush=True,
+                )
             if not result["accepted"]:
                 print(json.dumps(result["mismatches"], default=str), flush=True)
             return {

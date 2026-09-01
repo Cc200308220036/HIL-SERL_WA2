@@ -1,11 +1,11 @@
 schema_version: 1
 profile_id: lab_lan
-learner_ip: 172.16.9.36
-actor_ip: 172.16.8.241
+learner_ip: 172.16.8.40
+actor_ip: 172.16.9.253
 request_port: 5588
 broadcast_port: 5589
 request_timeout_ms: 3000
 network_max_age_s: 5.0
 upload_every_steps: 10
-allowed_actor_cidr: 172.16.8.241/32
+allowed_actor_cidr: 172.16.9.253/32
 

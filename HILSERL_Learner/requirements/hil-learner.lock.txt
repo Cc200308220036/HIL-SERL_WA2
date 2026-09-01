@@ -1,0 +1,132 @@
+# HIL-SERL Learner / Linux x86_64
+# Frozen from the isolated hil-learner environment on 2026-09-01.
+# Python: 3.10.20
+# pip: 26.1.2
+# setuptools: 83.0.0
+# wheel: 0.47.0
+# packaging: 26.2
+#
+# This file contains the complete pinned pip dependency set used by the
+# Learner, except for the two project-local components listed below.
+# It intentionally excludes packages visible only through the user's
+# site-packages (ROS 2, diffusers, datasets, etc.).
+#
+# Create the Conda environment first:
+#   conda create -n hil-learner \
+#     python=3.10.20 pip=26.1.2 setuptools=83.0.0 \
+#     wheel=0.47.0 packaging=26.2
+#
+# Then, from the HILSERL_Learner directory:
+#   export PYTHONNOUSERSITE=1
+#   python -m pip install --no-deps -r requirements/hil-learner.lock.txt
+#   python -m pip install --force-reinstall --no-deps \
+#     artifacts/wheels/agentlace-0.1.3-py3-none-any.whl
+#   python -m pip install --no-deps --editable \
+#     src/hil-serl-main/serl_launcher
+#
+# Agentlace wheel required SHA-256:
+#   1a800cc341f03eb6844273571ba26a265920fa1b5a698acc3d954438cbb72d32
+# ResNet10 parameters required SHA-256:
+#   175745d43d30233eb01b5369465d1c24c11b8ee71ccb734cc1c1bca13e07f57b
+#
+# The NVIDIA display/compute driver is a host prerequisite and is not
+# installed by this lock file. Validate the finished environment with:
+#   source scripts/activate_hil_learner.sh
+#   python scripts/verify_hil_learner_dependencies.py
+#   python scripts/verify_hil_learner_gpu.py
+
+absl-py==2.5.0
+annotated-types==0.8.0
+astunparse==1.6.3
+attrs==26.1.0
+certifi==2026.7.22
+charset-normalizer==3.4.9
+chex==0.1.88
+click==8.4.2
+cloudpickle==3.1.2
+contourpy==1.3.2
+cycler==0.12.1
+decorator==5.3.1
+distrax==0.1.5
+dm-tree==0.1.10
+einops==0.8.1
+etils==1.13.0
+Farama-Notifications==0.0.6
+flatbuffers==25.12.19
+flax==0.10.2
+fonttools==4.63.0
+fsspec==2026.7.0
+gast==0.7.0
+google-pasta==0.2.0
+grpcio==1.83.0
+gym==0.26.2
+gym-notices==0.1.0
+gymnasium==1.2.2
+h5py==3.14.0
+humanize==4.16.0
+idna==3.18
+ImageIO==2.37.2
+importlib_resources==7.1.0
+jax==0.4.35
+jax-cuda12-pjrt==0.4.35
+jax-cuda12-plugin==0.4.35
+jaxlib==0.4.35
+keras==3.12.4
+kiwisolver==1.5.0
+libclang==18.1.1
+lz4==4.4.5
+markdown-it-py==4.2.0
+matplotlib==3.10.9
+mdurl==0.1.2
+ml_collections==1.1.0
+ml_dtypes==0.5.4
+msgpack==1.2.1
+namex==0.1.0
+natsort==8.4.0
+nest-asyncio==1.6.0
+numpy==1.26.4
+nvidia-cublas-cu12==12.9.2.10
+nvidia-cuda-cupti-cu12==12.9.79
+nvidia-cuda-nvcc-cu12==12.9.86
+nvidia-cuda-nvrtc-cu12==12.9.86
+nvidia-cuda-runtime-cu12==12.9.79
+nvidia-cudnn-cu12==9.24.0.43
+nvidia-cufft-cu12==11.4.1.4
+nvidia-cusolver-cu12==11.7.5.82
+nvidia-cusparse-cu12==12.5.10.65
+nvidia-nccl-cu12==2.31.2
+nvidia-nvjitlink-cu12==12.9.86
+opencv-python==4.10.0.84
+opt-einsum==3.3.0
+optax==0.2.4
+optree==0.19.1
+orbax-checkpoint==0.10.3
+pillow==12.3.0
+platformdirs==4.11.0
+protobuf==7.35.1
+pydantic==2.13.4
+pydantic_core==2.46.4
+Pygments==2.20.0
+pyparsing==3.3.2
+python-dateutil==2.9.0.post0
+PyYAML==6.0.3
+pyzmq==27.1.0
+requests==2.34.2
+rich==15.0.0
+scipy==1.15.3
+sentry-sdk==2.66.1
+simplejson==4.1.1
+six==1.17.0
+tensorflow==2.21.0
+tensorflow-probability==0.25.0
+tensorstore==0.1.71
+termcolor==3.3.0
+tf_keras==2.21.0
+toolz==1.1.0
+tqdm==4.70.0
+typing-inspection==0.4.2
+typing_extensions==4.16.0
+urllib3==2.7.0
+wandb==0.28.1
+wrapt==2.3.0
+zipp==4.1.0

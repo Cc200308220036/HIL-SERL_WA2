@@ -1,0 +1,8 @@
+duration_s=600.0
+steps=23935
+trunc_count=0
+stale_trunc=0
+env_loop_fps=39.89
+head: recv=17989 approx_fps=29.98 mean_age=0.0187 max_age=0.0532
+wrist: recv=18002 approx_fps=30.00 mean_age=0.0185 max_age=0.0564
+R6_SOAK: PASS

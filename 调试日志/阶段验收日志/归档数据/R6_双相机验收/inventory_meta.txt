@@ -1,0 +1,2 @@
+head: topic=/zj_humanoid/sensor/realsense_head/color/image_raw h=720 w=1280 enc=rgb8 shape=(720, 1280, 3)
+wrist: topic=/zj_humanoid/sensor/left_wrist/image_raw h=720 w=1280 enc=bgr8 shape=(720, 1280, 3)

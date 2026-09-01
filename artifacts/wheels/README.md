@@ -9,4 +9,5 @@ agentlace-0.1.3-py3-none-any.whl
 SHA256SUMS
 ```
 
-使用 `scripts/prepare_hilserl_workspace.sh` 从已验证环境的只读来源准备文件。
+历史准备流程见
+`调试日志/阶段验收日志/归档代码/R0_容器环境准备/prepare_hilserl_workspace.sh`。

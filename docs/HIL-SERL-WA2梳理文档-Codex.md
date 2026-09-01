@@ -477,8 +477,8 @@ scripts/augment_r11_demo_grasp.py
 |---|---:|---|---|
 | `catkin_ws/runs/wa2_bottle_pick` | 约 30 GB | R9～R13 Actor demo、图像、分类器和日志 | 按 run 分类，不可整目录直接删 |
 | `HILSERL_Learner/runs/wa2_bottle_pick` | 约 32 GB | checkpoint、demo、两类 Buffer cache、metrics | 训练资产，需先定基线 |
-| `dustynv-jax-r36.4.0-arm64.tar.gz` | 约 4.2 GB | ARM64 JAX 基础镜像 tar | 镜像已入库且可重新获取/校验后可外部归档或删本地副本 |
-| `catkin_ws/failed` | 约 226 MB | 失败 episode | 诊断完成后可归档/删除 |
+| `dustynv-jax-r36.4.0-arm64.tar.gz` | 约 4.2 GB | 未采用的 ARM64 JAX 基础镜像 tar | 2026-09-01 已从工作区删除 |
+| `catkin_ws/failed` | 约 226 MB | 历史 R11 失败 episode | 2026-09-01 已按项目决策永久删除，不保留 JSON/PKL |
 | `调试日志` | 约 1.6 MB | 阶段证据 | 不进运行镜像；建议随工程交付归档 |
 | `catkin_ws/build`、`devel` | 数 MB | catkin 生成物 | 可重建；但当前容器运行前不要删 `devel`，除非验证重建流程 |
 
@@ -526,7 +526,7 @@ Learner:
 .pytest_cache/（若存在）
 临时 *.tmp
 空的 HILSERL_Learner/jax 文件
-空的根目录 SHA256SUMS（应删除或重新生成，不能作为有效校验文件）
+空的根目录 SHA256SUMS（已于 2026-09-01 删除；`artifacts/wheels/SHA256SUMS` 仍保留）
 ```
 
 `catkin_ws/build/` 和 `catkin_ws/devel/` 也是生成物，但现有容器可能依赖 `devel/setup.bash`。只有在最终 Dockerfile/构建脚本能够从源码完整重建并通过 R13 回归后，才适合从源码交付包排除。
@@ -550,7 +550,7 @@ Learner:
 | R12 训练工具 | 明确交付只支持冻结分类器推理，不支持再训练 |
 | joystick_drivers 非 spacenav 子包 | catkin 白名单构建与 SpaceMouse 回归通过 |
 | `naviai_controller/third_party` 旧安装器 | 明确实际依赖版本、镜像中已固化并留有校验副本 |
-| `dustynv-jax-*.tar.gz` | 镜像仓库已有版本化镜像，或 tar 已外部备份并有 SHA256 |
+| `dustynv-jax-*.tar.gz` | 未采用该镜像方案，根目录副本已于 2026-09-01 删除 |
 | 历史 checkpoint | 已定义 final/best/resume 三类保留点并验证 final 可加载 |
 | 历史 demo/分类器数据 | 已有不可变归档和 checksum，且确认不再用于 hard-negative 修正 |
 

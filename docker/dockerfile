@@ -1,8 +1,10 @@
 # HIL-SERL Orin Actor镜像
 #
-# 从仓库根目录构建，避免把4 GB以上的本地缓存发送给Docker daemon：
-#   cd /home/naviai/hilserl_orin
+# 从仓库根目录构建；仓库目录名和宿主机绝对路径均不影响构建：
+#   cd <orin_hilserl仓库根目录>
 #   docker build --network host \
+#     --build-arg IMAGE_VERSION=actor-v1 \
+#     --build-arg SOURCE_REVISION="$(git rev-parse HEAD)" \
 #     -f docker/dockerfile \
 #     -t hilserl:actor-v1 .
 #
@@ -12,6 +14,8 @@
 ARG BASE_IMAGE=ros1_docker:latest
 FROM ${BASE_IMAGE}
 
+ARG IMAGE_VERSION=actor-v1
+ARG SOURCE_REVISION=unknown
 ARG CONDA_FORGE_CHANNEL=https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
 ARG CONDA_MAIN_CHANNEL=https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
 ARG PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple
@@ -19,10 +23,13 @@ ARG PIP_EXTRA_INDEX_URL=https://pypi.org/simple
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-LABEL org.opencontainers.image.title="HIL-SERL Orin Actor" \
-      org.opencontainers.image.description="Validated HIL-SERL Actor runtime for Jetson Orin" \
+LABEL org.opencontainers.image.title="HIL-SERL WA2 Actor" \
+      org.opencontainers.image.description="HIL-SERL Actor runtime for WA2 on Jetson Orin" \
+      org.opencontainers.image.version="${IMAGE_VERSION}" \
+      org.opencontainers.image.revision="${SOURCE_REVISION}" \
       hilserl.environment="hil-actor" \
-      hilserl.baseline-date="2026-08-06"
+      hilserl.workspace="/root/catkin_ws" \
+      hilserl.baseline-date="2026-09-02"
 
 ENV DEBIAN_FRONTEND=noninteractive \
     TZ=Asia/Shanghai \
@@ -43,7 +50,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     XLA_PYTHON_CLIENT_PREALLOCATE=false \
     XLA_PYTHON_CLIENT_MEM_FRACTION=0.1 \
     TF_CPP_MIN_LOG_LEVEL=2 \
-    PYTHONPATH=/root/catkin_ws/src/hil-serl-main/serl_launcher:/root/catkin_ws/src/hil-serl-main/examples:/root/catkin_ws/src/hil-serl-main:/opt/hilserl/src/hil-serl-main/serl_launcher:/opt/hilserl/src/hil-serl-main/examples:/opt/hilserl/src/hil-serl-main
+    PYTHONPATH=/root/catkin_ws/src:/root/catkin_ws/src/hil-serl-main/serl_launcher:/root/catkin_ws/src/hil-serl-main/examples:/root/catkin_ws/src/hil-serl-main:/opt/hilserl/src/hil-serl-main/serl_launcher:/opt/hilserl/src/hil-serl-main/examples:/opt/hilserl/src/hil-serl-main
 
 WORKDIR /opt/hilserl
 

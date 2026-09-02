@@ -1,3 +1,5 @@
+# 历史最小依赖快照，不是当前Dockerfile的安装入口。
+# 当前镜像构建使用 docker/actor-requirements.txt；不要用pip freeze原样覆盖它。
 # 由 assembly:/opt/conda/envs/hil-jax 在 2026-08-05 验证后冻结。
 # 仅包含 pip 管理的包；Python/pip/setuptools/wheel/packaging 和 OpenCV
 # 由 Dockerfile 中的 Conda 命令固定安装，Agentlace 使用本地修正版 wheel。

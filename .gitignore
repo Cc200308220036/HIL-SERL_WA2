@@ -31,6 +31,8 @@ videos/
 .vscode/
 .idea/
 .DS_Store
+.agents/
+.claude/
 
 # Secrets and machine-local configuration
 .env

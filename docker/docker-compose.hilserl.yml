@@ -1,8 +1,17 @@
 services:
   hilserl:
-    # 当前复现阶段继续使用基础镜像，不触发派生镜像构建。
-    image: ros1_docker:latest
-    container_name: hilserl
+    # 镜像固化hil-actor；源码由仓库中的catkin_ws挂载。
+    image: ${HILSERL_IMAGE:-hilserl:actor-v1}
+    container_name: ${HILSERL_CONTAINER_NAME:-hilserl}
+
+    # 旧Orin可用Compose构建；新Orin docker load后使用--no-build启动。
+    build:
+      context: ..
+      dockerfile: docker/dockerfile
+      args:
+        BASE_IMAGE: ${HILSERL_BASE_IMAGE:-ros1_docker:latest}
+        IMAGE_VERSION: ${HILSERL_IMAGE_VERSION:-actor-v1}
+        SOURCE_REVISION: ${HILSERL_SOURCE_REVISION:-unknown}
 
     runtime: nvidia
     privileged: true
@@ -23,8 +32,8 @@ services:
 
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-      # 本地与容器使用同名 catkin_ws，目录内容双向同步。
-      - /home/naviai/hilserl_orin/catkin_ws:/root/catkin_ws
+      # 相对路径按Compose文件所在目录解析；仓库改名或换用户后无需修改。
+      - ../catkin_ws:/root/catkin_ws
 
       - /usr/lib/aarch64-linux-gnu/libcudnn.so.9:/usr/lib/aarch64-linux-gnu/libcudnn.so.9:ro
       - /usr/lib/aarch64-linux-gnu/libcudnn.so.9.3.0:/usr/lib/aarch64-linux-gnu/libcudnn.so.9.3.0:ro

@@ -16,4 +16,6 @@ if [[ -f /root/catkin_ws/devel/setup.bash ]]; then
     source /root/catkin_ws/devel/setup.bash
 fi
 
+export PYTHONPATH="/root/catkin_ws/src:${PYTHONPATH:-}"
+
 exec "$@"

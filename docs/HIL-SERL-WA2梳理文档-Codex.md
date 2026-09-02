@@ -404,7 +404,7 @@ HILSERL_Learner/src/hil-serl-main/...
 | R2 | Mock Env、隔离硬件 | `mock_*` 保留测试；`verify_r2_mock_env.py` 为 T |
 | R3 | 只读真实状态 | 状态监控进入 P0；`r3_soak_readonly.py`、`verify_r3_*` 为 T |
 | R4 | ServoL dry-run、hold、真实 Gate | `servo_session.py` 进入 P0；`r4_*`、`verify_r4_*` 为 T |
-| R5 | 场景 reset | `scene_config.py`、`reset_executor.py` 进入 P0；`verify_r5_reset.py` 为 T |
+| R5 | 场景 reset | `scene_config.py`、`reset_executor.py` 进入 P0；`verify_r5_reset.py` 作为训练前单次 reset 运维入口保留 |
 | R6 | 双相机与预处理 | image adapters 进入 P0；inventory/soak/verify 脚本为 T |
 | R7 | SpaceMouse 干预 | intervention/watchdog 进入 P0；`verify_r7_*` 为 T |
 | R8 | task 配置、fake env、Agent/Buffer | task/env factory 和 Buffer 进入 P0；`verify_r8_*` 为 T/P1 |
@@ -429,7 +429,6 @@ scripts/verify_r2_mock_env.py
 scripts/verify_r3_readonly_env.py
 scripts/verify_r4_servo_dryrun.py
 scripts/verify_r4_servo_gates.py
-scripts/verify_r5_reset.py
 scripts/verify_r6_image_live.py
 scripts/verify_r6_image_offline.py
 scripts/verify_r7_intervention_live.py
